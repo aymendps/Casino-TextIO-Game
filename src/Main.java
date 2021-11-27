@@ -2,7 +2,7 @@ public class Main {
 	
 	public static void main(String[] args) {
 		
-		SQLDatabase sql = new SQLDatabase("casino_app", "root", "WaRkAiT123-");
+		SQLDatabase sql = new SQLDatabase("casino_app", "root", "yourpassword");
 		System.out.print("Established MYSQL connection: " + sql.connection.toString());
 		System.out.print("\r\nStarting Application..");
 		
