@@ -61,16 +61,16 @@ public abstract class Game{
 		while(betDecision!=1 && betDecision!=2);
 		if(betDecision==1)
 		{
-			TextIO.putln("Please type an amount to bet:\r\nYou currently have " + player.GetChips() + " chips:\r\nMinimum bet is " + minBet + " chips:");
+			TextIO.putln("Please type an amount to bet:\r\nYou currently have " + player.GetBalance() + " chips:\r\nMinimum bet is " + minBet + " chips:");
 			do
 			{
 				playerBet = TextIO.getlnInt();
 			}
-			while(playerBet<minBet || playerBet>player.GetChips());
+			while(playerBet<minBet || playerBet>player.GetBalance());
 		}
 		else if(betDecision==2)
 		{
-			playerBet = player.GetChips();
+			playerBet = player.GetBalance();
 		}
 	}
 

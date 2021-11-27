@@ -8,12 +8,14 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 public class Account implements Music {
-	
-	private String username;
+	private AccountInfo accountInfo;
+	private SQLDatabase SQLdb;
+	private boolean useSQL = true;
+	//private String username;
 	private String tempuser; // Temp username used for sign-in
-	private String password;
+	//private String password;
 	private String temppass; // Temp password used for sign-in
-	private int chips;
+	//private int chips;
 	
 	private int DBtotalindex; // Number of databases created containing Username/Password/Chips
 	private int DBcurrentindex; // Index of currently used database 
@@ -22,8 +24,8 @@ public class Account implements Music {
 	private boolean SignInSuccess; // Checks if sign-in was successful or not
 	private boolean SignUpSuccess; // Checks if sign-up was successful or not
 	
-	public GameStats blackJack;
-	public GameStats slotMachine;
+	public GameStats blackJackStats;
+	public GameStats slotMachineStats;
 	
 	
 	private AudioInputStream soundEffectStream; // Using the same AudioInputStream and the same Clip
@@ -37,31 +39,20 @@ public class Account implements Music {
 	
 
 	
-    public Account()
+    public Account(SQLDatabase SQLdb)
     {
-    	username="";
-    	password="";
-    	chips=0;
+    	accountInfo = new AccountInfo();
+    	blackJackStats = new GameStats(SQLDatabase.blackjack);
+    	slotMachineStats = new GameStats(SQLDatabase.slotMachine);
+    	this.SQLdb = SQLdb;
     	FetchDBTI();
     	FetchFiles();
-    	blackJack = new GameStats(SQLDatabase.blackjack);
-    	slotMachine = new GameStats(SQLDatabase.slotMachine);
-    }
-    
-	public Account(String username, String password, int chips)
-    {
-        this.username=username;
-        this.password=password;
-        this.chips=chips;
-        FetchDBTI();
-        FetchFiles();
-        blackJack = new GameStats(SQLDatabase.blackjack);
-    	slotMachine = new GameStats(SQLDatabase.slotMachine);
+
     }
 	
-	public int GetChips()
+	public int GetBalance()
 	{
-		return chips;
+		return accountInfo.balance;
 	}
 	
 	private void FetchFiles()
@@ -145,35 +136,65 @@ public class Account implements Music {
 		DBtotalindex = TextIO.getInt();
 		TextIO.readStandardInput();
 	}	
-	private void FetchDBCI()
+	private void FetchAccount()
 	{
 		if(SignUp == true)
 		{
-			String uniqueUser,uniquePass;
-			boolean uniqueTest=true;
-			for(int i=0; i<DBtotalindex;i++)
+			if(useSQL)
 			{
-				String fileName = "db\\DB" + i + ".casino";
-				TextIO.readFile(fileName);
-				uniqueUser = TextIO.getln();
-				uniquePass = TextIO.getln();
-				TextIO.readStandardInput();
-				if(uniqueUser.equals(username)==true && uniquePass.equals(password)==true)
+				if(SQLdb.UsernameExists(accountInfo.username))
 				{
-					uniqueTest=false;
+					SignUpSuccess=false;
+					TextIO.putln("[This username is already taken. Please try again:]");
 				}
-			}
-			if(uniqueTest==false)
-			{
-				SignUpSuccess=false;
-				TextIO.putln("[This combination of username & password is already taken. Please try again:]");
+				else if(SQLdb.CCNExists(accountInfo.ccn))
+				{
+					SignUpSuccess=false;
+					TextIO.putln("[This credit card number is already taken. Please try again:]");
+				}
+				else if(SQLdb.PhoneNumberExists(accountInfo.phone))
+				{
+					SignUpSuccess=false;
+					TextIO.putln("[This phone number is already taken. Please try again:]");
+				}
+				else
+				{
+					SignUpSuccess=true;
+					SQLdb.InsertIntoAccount(accountInfo);
+					SQLdb.InsertIntoGame(blackJackStats, accountInfo.username);
+					SQLdb.InsertIntoGame(slotMachineStats, accountInfo.username);
+				}
 			}
 			else
 			{
-				SignUpSuccess=true;
-				DBcurrentindex=DBtotalindex;
-				UpdateDB();
+				String uniqueUser,uniquePass;
+				boolean uniqueTest=true;
+				for(int i=0; i<DBtotalindex;i++)
+				{
+					String fileName = "db\\DB" + i + ".casino";
+					TextIO.readFile(fileName);
+					uniqueUser = TextIO.getln();
+					uniquePass = TextIO.getln();
+					TextIO.readStandardInput();
+					if(uniqueUser.equals(accountInfo.username)==true && 
+							uniquePass.equals(accountInfo.password)==true)
+					{
+						uniqueTest=false;
+					}
+				}
+				if(uniqueTest==false)
+				{
+					SignUpSuccess=false;
+					TextIO.putln("[This combination of username & password is already taken. Please try again:]");
+				}
+				else
+				{
+					SignUpSuccess=true;
+					DBcurrentindex=DBtotalindex;
+					UpdateDB();
+				}
 			}
+
 		}
 		else if(SignUp == false)
 		{
@@ -216,9 +237,9 @@ public class Account implements Music {
 	{
 		String fileName = "db\\DB" + DBcurrentindex + ".casino";
 		TextIO.writeFile(fileName);
-		TextIO.putln(username);
-		TextIO.putln(password);
-		TextIO.putln(chips);
+		TextIO.putln(accountInfo.username);
+		TextIO.putln(accountInfo.password);
+		TextIO.putln(accountInfo.balance);
 		if(SignUp==true)
 		{
 		DBtotalindex++;
@@ -232,9 +253,9 @@ public class Account implements Music {
 	{
 		String fileName = "db\\DB" + DBcurrentindex + ".casino";
 		TextIO.readFile(fileName);
-		username=TextIO.getln();
-	    password=TextIO.getln();
-	    chips=TextIO.getlnInt();
+		accountInfo.username=TextIO.getln();
+	    accountInfo.password=TextIO.getln();
+	    accountInfo.balance=TextIO.getlnInt();
 	    TextIO.readStandardInput();
 	}
 	
@@ -346,9 +367,9 @@ public class Account implements Music {
 		//}
 	}
 		
-    public void ChangeChips(int x) // x should be: Positive if + / Negative if -
+    public void ChangeBalance(int x) // x should be: Positive if + / Negative if -
     {
-    	chips = chips + x;
+    	accountInfo.balance = accountInfo.balance + x;
     }
 	public void Deposit()
 	{
@@ -367,12 +388,12 @@ public class Account implements Music {
 	    TextIO.putln("I just need you to insert your card here please.");
 	    do
 	    {
-	    TextIO.putln("Please type your Bank Account / Card number:");
+	    TextIO.putln("Please type your Credit Card Number:");
 		bankNumber=TextIO.getlnLong();
 		}
 		while(bankNumber<10000000);
 		
-	    ChangeChips(deposit);
+	    ChangeBalance(deposit);
 	    UpdateDB();
 	    PlaySoundEffect(transactionSE);
 	    TextIO.putln("Transaction complete!");
@@ -380,7 +401,7 @@ public class Account implements Music {
 	}
 	public void Withdraw()
 	{
-		if(chips>0)
+		if(accountInfo.balance>0)
 		{
 		long bankNumber;
 		int withdraw;
@@ -391,7 +412,7 @@ public class Account implements Music {
         TextIO.putln("Please enter the number of chips:");
 		withdraw=TextIO.getlnInt();
 	    }
-	    while(withdraw>chips);
+	    while(withdraw>accountInfo.balance);
 	    PlaySoundEffect(bank_cardSE);
 	    TextIO.putln("I just need you to insert your card here please.");
 		do
@@ -402,7 +423,7 @@ public class Account implements Music {
 		while(bankNumber<10000000);
 		
 
-	    ChangeChips(-withdraw);
+	    ChangeBalance(-withdraw);
 	    UpdateDB();
 	    PlaySoundEffect(transactionSE);
 	    TextIO.putln("Transaction complete!");
@@ -419,11 +440,10 @@ public class Account implements Music {
 	}
 	private void SignUp()
 	{
-	       int age;
 	       TextIO.putln("Please type your age:");
-	       age = TextIO.getlnInt();
+	       accountInfo.age = TextIO.getlnInt();
            
-	       if(age<18)
+	       if(accountInfo.age<18)
 	       {
 	    	   PlaySoundEffect(intro_securitySE);
 	    	   TextIO.putln("YOU MUST BE OVER 18 YEARS OLD TO SIGN UP!");
@@ -440,20 +460,39 @@ public class Account implements Music {
 		   {
 	       do
 	       {
-			   TextIO.putln("Please type your Username:\r\nMust be between 4 and 10 of length:");
-	           username=TextIO.getlnString();
+			   TextIO.putln("Please type your Username:\r\nMust be between 4 and 16 of length:");
+	           accountInfo.username=TextIO.getlnString();
 	       } 
-	       while(username.length()<4 ||  username.length()>10);
+	       while(accountInfo.username.length()<4 ||  accountInfo.username.length()>16);
 
 	       do
 	       {
-	           TextIO.putln("Please type your Password:\r\nMust be between 8 and 16 of length:");
-	           password=TextIO.getlnString();
+	           TextIO.putln("Please type your Password:\r\nMust be between 6 and 16 of length:");
+	           accountInfo.password=TextIO.getlnString();
 	       }
-	       while(password.length()<8 ||  password.length()>16);
+	       while(accountInfo.password.length()<6 ||  accountInfo.password.length()>16);
 	        
+		   do
+		   {
+				TextIO.putln("Please type your Credit Card Number:");
+				accountInfo.ccn=TextIO.getlnInt();
+		   }
+		   while(accountInfo.ccn<10000000);
+
+		   do
+		   {
+				TextIO.putln("Please type your Phone Number:");
+				accountInfo.phone=TextIO.getlnInt();
+		   }
+		   while(accountInfo.phone<10000000);
+		   
+		   TextIO.putln("Please type your First Name:");
+		   accountInfo.firstName=TextIO.getlnString();
+		   TextIO.putln("Please type your Last Name:");
+		   accountInfo.lastName=TextIO.getlnString();
+
 	       SignUp = true;
-	       FetchDBCI();
+	       FetchAccount();
 		   }while(SignUpSuccess==false);
 	       SignUp = false; // Sign-up complete, so behave like a signed-in account now
 	       PlaySoundEffect(intro_endSE);
@@ -478,7 +517,7 @@ public class Account implements Music {
         }
         while(temppass.length()<8 || temppass.length()>16);
         SignUp = false;
-        FetchDBCI();
+        FetchAccount();
 		}
 		while(SignInSuccess==false);
 	}

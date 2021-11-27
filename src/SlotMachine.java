@@ -65,7 +65,7 @@ public void StartGame()
 	boolean changeBet=true;
 	do
 	{
-	if(player.GetChips()>super.GetMinBet())
+	if(player.GetBalance()>super.GetMinBet())
 	{
 		 
 		if(changeBet==true)
@@ -98,12 +98,12 @@ public void StartGame()
 	
 	TextIO.putln("    _______________");
 	TextIO.putln("   |  ("+ firstNumber + ") ("  + secondNumber + ") (" + thirdNumber + ")  |");
-	TextIO.putln("    ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯");
+	TextIO.putln("    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
 	
 	if((firstNumber==7)&&(secondNumber==7)&&(thirdNumber==7))
 	{
 		TextIO.putln("[LUCKY STRIKE! YOU WIN 1000x YOUR BET: " + super.GetPlayerBet()*1000 + " CHIPS!]");
-		player.ChangeChips(super.GetPlayerBet()*1000-super.GetPlayerBet());
+		player.ChangeBalance(super.GetPlayerBet()*1000-super.GetPlayerBet());
 		win=true;
 	}
 	else if ((firstNumber==4)&&(secondNumber==0)&&(thirdNumber==4))
@@ -116,30 +116,30 @@ public void StartGame()
 if((firstNumber % 2 == 0) && (secondNumber % 2 == 0 )&& (thirdNumber %2 == 0))
 {
 	TextIO.putln("[ALL EVEN! You win 2x your bet: " + super.GetPlayerBet()*2 + " chips!]");
-	player.ChangeChips(super.GetPlayerBet()*2-super.GetPlayerBet());
+	player.ChangeBalance(super.GetPlayerBet()*2-super.GetPlayerBet());
 	win=true;
 }
 if( firstNumber + secondNumber== thirdNumber)
 {
 	TextIO.putln("[SUM COMBO! You win 10x your bet: " + super.GetPlayerBet()*10 + " chips!]");
-	player.ChangeChips(super.GetPlayerBet()*10-super.GetPlayerBet());
+	player.ChangeBalance(super.GetPlayerBet()*10-super.GetPlayerBet());
 	win=true;
 }
 if((firstNumber % 2 != 0) && (secondNumber % 2 != 0 )&& (thirdNumber %2 != 0))
 {
 	TextIO.putln("[ALL ODD! You win 3x your bet: " + super.GetPlayerBet()*3 + " chips!]");
-	player.ChangeChips(super.GetPlayerBet()*3-super.GetPlayerBet());
+	player.ChangeBalance(super.GetPlayerBet()*3-super.GetPlayerBet());
 	win=true;
 }
 	}
 	if(win==false)
 	{	
 		TextIO.putln("[Unlucky! No winning combination.. You lose your bet: " + super.GetPlayerBet() + " chips!]");
-		player.ChangeChips(-super.GetPlayerBet());
+		player.ChangeBalance(-super.GetPlayerBet());
 	}
 	player.UpdateDB();
 	player.PlaySoundEffect(player.game_roundSE);
-	TextIO.putln("So.. Another round? [Your current balance: " + player.GetChips() + " chips]\r\n[1- Yes, keep the same bet | 2- Yes, but change the bet | 3- No]");
+	TextIO.putln("So.. Another round? [Your current balance: " + player.GetBalance() + " chips]\r\n[1- Yes, keep the same bet | 2- Yes, but change the bet | 3- No]");
     int repeatDecision;
 	boolean mistake = false;
 		do
@@ -159,14 +159,14 @@ if((firstNumber % 2 != 0) && (secondNumber % 2 != 0 )&& (thirdNumber %2 != 0))
 		
 		if(repeatDecision==1 || repeatDecision==2)
 		{
-			if(player.GetChips()>=super.GetMinBet())
+			if(player.GetBalance()>=super.GetMinBet())
 			{
 				repeatGame=true; 
 				if(repeatDecision==2)
             {
             	changeBet=true;
             }
-            else if(repeatDecision==1 && super.GetPlayerBet()>player.GetChips())
+            else if(repeatDecision==1 && super.GetPlayerBet()>player.GetBalance())
             {
             	TextIO.putln("[Not enough chips to keep the same bet. Please change it ahead]");
             	changeBet=true;
@@ -176,7 +176,9 @@ if((firstNumber % 2 != 0) && (secondNumber % 2 != 0 )&& (thirdNumber %2 != 0))
 			{
 				int depositDecision;
 				player.PlaySoundEffect(player.game_nochipsSE);
-				TextIO.putln("It seems like you don't have enough chips anymore.\r\n[Current balance: " + player.GetChips() + "chips]\r\n[Minimum bet is: " + super.GetMinBet() + "chips]\r\nWould you like to purchase more right now? [1- Yes | 2- No]");
+				TextIO.putln("It seems like you don't have enough chips anymore.\r\n[Current balance: "
+				+ player.GetBalance() + "chips]\r\n[Minimum bet is: "
+				+ super.GetMinBet() + "chips]\r\nWould you like to purchase more right now? [1- Yes | 2- No]");
 				boolean mistake2 = false;
 		   		do
 		   		{
@@ -215,7 +217,9 @@ if((firstNumber % 2 != 0) && (secondNumber % 2 != 0 )&& (thirdNumber %2 != 0))
 	else
 	{
 		player.PlaySoundEffect(player.game_nochipsSE);
-		TextIO.putln("It seems like you don't have enough chips anymore.\r\n[Current balance: " + player.GetChips() + "chips]\r\n[Minimum bet is: " + super.GetMinBet() + "chips]\r\nWould you like to purchase more right now? [1- Yes | 2- No]");
+		TextIO.putln("It seems like you don't have enough chips anymore.\r\n[Current balance: "
+		+ player.GetBalance() + "chips]\r\n[Minimum bet is: "
+		+ super.GetMinBet() + "chips]\r\nWould you like to purchase more right now? [1- Yes | 2- No]");
 		boolean mistake = false;
 		int depositDecision;
    		do

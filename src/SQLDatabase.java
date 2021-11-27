@@ -5,7 +5,11 @@ public class SQLDatabase {
 	static String blackjack = "blackjack";
 	static String slotMachine = "slot machine";
 	
-	static String selectFromAccount = "SELECT balance FROM account WHERE username=";
+	static String selectFromAccountBalance = "SELECT balance FROM account WHERE username=";
+    static String selectFromAccountSignIn = "SELECT * FROM account WHERE username=";
+    static String selectFromAccountUsername = "Select username FROM account WHERE username=";
+    static String selectFromAccountCCN = "Select credit_card_number FROM account WHERE credit_card_number=";
+    static String selectFromAccountPhone = "Select phone_number FROM account WHERE phone_number=";
 	static String selectFromGame = "SELECT time_played, games_won, games_lost, largest_win, longest_streak "
 			+ "FROM game WHERE game_name=";
 	static String selectFromDeposit = "SELECT id, date, amount FROM deposit WHERE username=";
@@ -20,7 +24,7 @@ public class SQLDatabase {
 
 	static String updateAccount = "UPDATE account SET balance=";
 			/*UPDATE table
-			SET column1 = value1, column2=value2, …
+			SET column1 = value1, column2=value2, ï¿½
 			WHERE username = " "  ;*/		
 			
 	String database;
@@ -111,7 +115,7 @@ public class SQLDatabase {
         try (Statement statement = connection.createStatement();) 
         {
             // Create and execute a SELECT SQL statement.
-        	String select = SQLDatabase.selectFromAccount + "'" + username + "'";
+        	String select = SQLDatabase.selectFromAccountBalance + "'" + username + "'";
             resultSet = statement.executeQuery(select);
             // Print results from select statement
             int balance = 0;
@@ -133,6 +137,105 @@ public class SQLDatabase {
 		where username ="aziz"
 		*/
 	}
+
+    public boolean UsernameExists(String username)
+    {
+        ResultSet resultSet = null;
+        String exists = "Not There";
+        try (Statement statement = connection.createStatement();) 
+        {
+            // Create and execute a SELECT SQL statement.
+        	String select = SQLDatabase.selectFromAccountUsername + "'" + username + "'";
+            resultSet = statement.executeQuery(select);
+            // Print results from select statement
+            while (resultSet.next()) {
+                exists = resultSet.getString("username");
+            }
+            return !exists.equals("Not There");
+        
+        }
+        catch(SQLException e)
+        {
+        	e.printStackTrace();
+        	return !exists.equals("Not There");
+        }
+    }
+
+    public boolean CCNExists(int ccn)
+    {
+        ResultSet resultSet = null;
+        int exists = -1;
+        try (Statement statement = connection.createStatement();) 
+        {
+            // Create and execute a SELECT SQL statement.
+        	String select = SQLDatabase.selectFromAccountCCN + ccn;
+            resultSet = statement.executeQuery(select);
+            // Print results from select statement
+            while (resultSet.next()) {
+                exists = resultSet.getInt("credit_card_number");
+            }
+            return exists!=-1;
+        
+        }
+        catch(SQLException e)
+        {
+        	e.printStackTrace();
+        	return exists!=-1;
+        }
+    }
+
+    public boolean PhoneNumberExists(int phone)
+    {
+        ResultSet resultSet = null;
+        int exists = -1;
+        try (Statement statement = connection.createStatement();) 
+        {
+            // Create and execute a SELECT SQL statement.
+        	String select = SQLDatabase.selectFromAccountPhone + phone;
+            resultSet = statement.executeQuery(select);
+            // Print results from select statement
+            while (resultSet.next()) {
+                exists = resultSet.getInt("phone_number");
+            }
+            return exists!=-1;
+        
+        }
+        catch(SQLException e)
+        {
+        	e.printStackTrace();
+        	return exists!=-1;
+        }
+    }
+
+    public AccountInfo SelectFromAccount(String username, String password) // FOR SIGN IN
+    {
+        ResultSet resultSet = null;
+		AccountInfo info = new AccountInfo();
+        try (Statement statement = connection.createStatement();) 
+        {
+            // Create and execute a SELECT SQL statement.
+        	String select = SQLDatabase.selectFromAccountSignIn + "'" + username + "' AND password=" + "'" + password + "'";
+            resultSet = statement.executeQuery(select);
+            // Print results from select statement
+            while (resultSet.next()) {
+                info.username = resultSet.getString("username");
+                info.password = resultSet.getString("password");
+                info.balance = resultSet.getInt("balance");
+                info.ccn = resultSet.getInt("credit_card_number");
+                info.firstName = resultSet.getString("first_name");
+                info.lastName = resultSet.getString("last_name");
+                info.phone = resultSet.getInt("phone_number");
+                info.age = resultSet.getInt("age");
+            }
+            return info;
+        
+        }
+        catch(SQLException e)
+        {
+        	e.printStackTrace();
+        	return info;
+        }
+    }
 
 	public GameStats SelectFromGame(String gameName, String username) // FOR GAME STATS
 	{
@@ -242,7 +345,7 @@ public class SQLDatabase {
 	public void UpdateAccount(int balance, String username)
 	{
 		/*UPDATE table
-		SET column1 = value1, column2=value2, …
+		SET column1 = value1, column2=value2, ï¿½
 		WHERE username = " "  ;*/
 		
     	String update = SQLDatabase.updateAccount + balance + " WHERE username=" + "'" + username + "'"; 		
@@ -262,7 +365,7 @@ public class SQLDatabase {
 	public void UpdateGame(GameStats stats, String username, boolean isGameWon)
 	{
 		/*UPDATE table
-		SET column1 = value1, column2=value2, …
+		SET column1 = value1, column2=value2, ï¿½
 		WHERE username = " "  ;*/
 		//game_name,username,time_played,games_won,games_lost,largest_win,longest_streak
 		String update;

@@ -17,8 +17,8 @@ public class AccountInfo {
 		firstName = "admin";
 		lastName = "admin";
 		balance = 0;
-		ccn = 12345678;
-		phone = 12345678;
+		ccn = 1234567890;
+		phone = 1234567890;
 		age = 21;
 				
 	}
@@ -32,6 +32,12 @@ public class AccountInfo {
 		this.ccn = ccn;
 		this.phone = phone;
 		this.age = age;
+	}
+
+	public void Print()
+	{
+		System.out.println(username + "\r\n" + password + "\r\n" + firstName + "\r\n" + lastName + "\r\n" + balance + "\r\n"
+		+ ccn + "\r\n" + phone + "\r\n" + age + "\r\n");
 	}
 	
 	

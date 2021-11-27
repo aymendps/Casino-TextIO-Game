@@ -47,6 +47,7 @@ create table Casino_App.Deposit (
 #########################################################################################################
 
 insert into purchase(date,amount,username,game_name) values("2021-11-25",100,"aziz","blackjack");
+SELECT * from account;
 SELECT * from game;
 DELETE FROM game;
 DELETE FROM account;
@@ -55,3 +56,4 @@ values("aziz", "lolaazz", 500, 151510,"aziz","maazouz",1541545,23);
 Insert into game(game_name,username,time_played,games_won,games_lost,largest_win,longest_streak)
 values("slot machine", "aziz", 4, 2, 3, 300, 7);
 UPDATE account SET balance=balance-50 WHERE username = "aziz";
+SELECT * from account WHERE username = "admin" AND password = "admin"

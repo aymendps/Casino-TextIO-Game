@@ -114,7 +114,7 @@ public class Blackjack extends Game{
 	   boolean changeBet=true;
        do
        {
-    	   if(player.GetChips()>super.GetMinBet())
+    	   if(player.GetBalance()>super.GetMinBet())
     	   {   
 	   do
          {
@@ -143,7 +143,7 @@ public class Blackjack extends Game{
            	{
            		roundDone=true;
            		TextIO.putln("[Lucky! You got a Blackjack! ROUND WON]");
-           		player.ChangeChips(super.GetPlayerBet()+ super.GetPlayerBet()/2);
+           		player.ChangeBalance(super.GetPlayerBet()+ super.GetPlayerBet()/2);
            		betComplete=false;
            	}
            	else if(deck.GetPlayerBackJack()==true && deck.GetBankBackJack()==true)
@@ -156,7 +156,7 @@ public class Blackjack extends Game{
            	}
            	else
            	{
-           	if(player.GetChips()>=super.GetPlayerBet()*2)
+           	if(player.GetBalance()>=super.GetPlayerBet()*2)
            	{
            		TextIO.putln("[The dealer is waiting for your decision: 1: Hit | 2: Stand | 3: Double]");
            		do
@@ -183,7 +183,7 @@ public class Blackjack extends Game{
            	{
            		roundDone=true;
            		TextIO.putln("[Total count of your cards exceeds 21: ROUND LOST]");
-           		player.ChangeChips(-super.GetPlayerBet());
+           		player.ChangeBalance(-super.GetPlayerBet());
            		betComplete=false;
            	}
              	}
@@ -204,7 +204,7 @@ public class Blackjack extends Game{
                	{
                		roundDone=true;
                		TextIO.putln("[Total count of your cards exceeds 21: ROUND LOST]");
-               		player.ChangeChips(-super.GetPlayerBet());
+               		player.ChangeBalance(-super.GetPlayerBet());
                		betComplete=false;
                	}
              	}
@@ -227,14 +227,14 @@ public class Blackjack extends Game{
            	{
            		roundDone=true;
            		TextIO.putln("[Total count of opposition cards exceeds 21: ROUND WON]");
-           		player.ChangeChips(super.GetPlayerBet());
+           		player.ChangeBalance(super.GetPlayerBet());
            		betComplete=false;
            	}
            	else if((deck.GetBankCount()>deck.GetPlayerCount()) && deck.GetBankCount()>=17)
            	{
            		roundDone=true;
            		TextIO.putln("[Total count of opposition cards exceeds total count of your cards: ROUND LOST]");
-           		player.ChangeChips(-super.GetPlayerBet());
+           		player.ChangeBalance(-super.GetPlayerBet());
            		betComplete=false;
            	}
            	else if((deck.GetBankCount()==deck.GetPlayerCount()) && deck.GetBankCount()>=17)
@@ -256,7 +256,7 @@ public class Blackjack extends Game{
        
 	    player.UpdateDB();
         player.PlaySoundEffect(player.game_roundSE);
-    	TextIO.putln("So.. Another round? [Your current balance: " + player.GetChips() + " chips]\r\n[1- Yes, keep the same bet | 2- Yes, but change the bet | 3- No]");
+    	TextIO.putln("So.. Another round? [Your current balance: " + player.GetBalance() + " chips]\r\n[1- Yes, keep the same bet | 2- Yes, but change the bet | 3- No]");
     	
    		boolean mistake = false;
    		do
@@ -276,7 +276,7 @@ public class Blackjack extends Game{
    		
    		if(repeatDecision==1 || repeatDecision==2)
    		{
-   			if(player.GetChips()>=super.GetMinBet())
+   			if(player.GetBalance()>=super.GetMinBet())
    			{
    				repeat=true; 
                 if(repeatDecision==1 && playerDecision==3)
@@ -287,7 +287,7 @@ public class Blackjack extends Game{
                 {
                 	changeBet=true;
                 }
-                else if(repeatDecision==1 && super.GetPlayerBet()>player.GetChips())
+                else if(repeatDecision==1 && super.GetPlayerBet()>player.GetBalance())
                 {
                 	TextIO.putln("[Not enough chips to keep the same bet. Please change it ahead]");
                 	changeBet=true;
@@ -297,7 +297,9 @@ public class Blackjack extends Game{
    			{
    				int depositDecision;
    				player.PlaySoundEffect(player.game_nochipsSE);
-   				TextIO.putln("It seems like you don't have enough chips anymore.\r\n[Current balance: " + player.GetChips() + "chips]\r\n[Minimum bet is: " + super.GetMinBet() + "chips]\r\nWould you like to purchase more right now? [1- Yes | 2- No]");
+   				TextIO.putln("It seems like you don't have enough chips anymore.\r\n[Current balance: "
+   				+ player.GetBalance() + "chips]\r\n[Minimum bet is: "
+   				+ super.GetMinBet() + "chips]\r\nWould you like to purchase more right now? [1- Yes | 2- No]");
    				boolean mistake2 = false;
    		   		do
    		   		{
@@ -335,7 +337,9 @@ public class Blackjack extends Game{
     	   else
     	   {
     		   player.PlaySoundEffect(player.game_nochipsSE);
-    			TextIO.putln("It seems like you don't have enough chips anymore.\r\n[Current balance: " + player.GetChips() + "chips]\r\n[Minimum bet is: " + super.GetMinBet() + "chips]\r\nWould you like to purchase more right now? [1- Yes | 2- No]");
+    			TextIO.putln("It seems like you don't have enough chips anymore.\r\n[Current balance: " 
+    		   + player.GetBalance() + "chips]\r\n[Minimum bet is: " 
+    		   + super.GetMinBet() + "chips]\r\nWould you like to purchase more right now? [1- Yes | 2- No]");
     			boolean mistake = false;
     			int depositDecision;
     	   		do
