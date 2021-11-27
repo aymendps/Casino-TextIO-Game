@@ -22,6 +22,9 @@ public class Account implements Music {
 	private boolean SignInSuccess; // Checks if sign-in was successful or not
 	private boolean SignUpSuccess; // Checks if sign-up was successful or not
 	
+	public GameStats blackJack;
+	public GameStats slotMachine;
+	
 	
 	private AudioInputStream soundEffectStream; // Using the same AudioInputStream and the same Clip
     public Clip soundEffectClip;          // in order to have only 1 Sound Effect playing at a time
@@ -41,6 +44,8 @@ public class Account implements Music {
     	chips=0;
     	FetchDBTI();
     	FetchFiles();
+    	blackJack = new GameStats(SQLDatabase.blackjack);
+    	slotMachine = new GameStats(SQLDatabase.slotMachine);
     }
     
 	public Account(String username, String password, int chips)
@@ -50,6 +55,8 @@ public class Account implements Music {
         this.chips=chips;
         FetchDBTI();
         FetchFiles();
+        blackJack = new GameStats(SQLDatabase.blackjack);
+    	slotMachine = new GameStats(SQLDatabase.slotMachine);
     }
 	
 	public int GetChips()
@@ -404,6 +411,11 @@ public class Account implements Music {
 		{
 			TextIO.putln("[Your balance is 0 chips. You don't have any chips to withdraw.]");
 		}
+	}
+	
+	public void ViewGameStats()
+	{
+		
 	}
 	private void SignUp()
 	{
