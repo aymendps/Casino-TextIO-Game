@@ -1,9 +1,10 @@
-import java.sql.*;
-
 public class Main {
 	
-	static void Loop()
-	{
+	public static void main(String[] args) {
+		
+		SQLDatabase sql = new SQLDatabase("casino_app", "root", "WaRkAiT123-");
+		System.out.print(sql.connection);
+		
 		Account player = new Account();
 
 		player.UserChoice();
@@ -63,22 +64,11 @@ public class Main {
 			{
 				// Wait for last sound effect to end
 			}
+			sql.CloseConnection();
 			System.exit(0);
 		}
 		}
 		while(temp!=5);
-	}
-	
-	public static void main(String[] args) {
-		
-		SQLDatabase sql = new SQLDatabase("casino_app", "root", "WaRkAiT123-");
-		try {
-				sql.ConnectToServer();
-				Loop();
-			}
-        catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
 	}
 
 }

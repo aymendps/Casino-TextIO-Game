@@ -1080,7 +1080,6 @@ public class TextIO {
                 	{
                 		if(evt.getKeyChar() == '\n')
                 		{
-                			System.out.println("Pressed Enter button");
                 			appStarted = true;
                 		}
                 		else
