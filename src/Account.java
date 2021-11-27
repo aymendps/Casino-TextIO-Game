@@ -234,6 +234,7 @@ public class Account implements Music {
 	public void UserChoice()
 	{
 		PlayMusic();
+		System.out.print("\r\nStarted Application");
 		int temp;
 		TextIO.putln("        _______                                           . .   ' '  ,  ,\r\n"
 				+ "       /\\ o o o\\      ____    _    ____ ___ _   _  ___       _________\r\n"

@@ -3,7 +3,15 @@ public class Main {
 	public static void main(String[] args) {
 		
 		SQLDatabase sql = new SQLDatabase("casino_app", "root", "WaRkAiT123-");
-		System.out.print(sql.connection);
+		System.out.print("Established MYSQL connection: " + sql.connection.toString());
+		System.out.print("\r\nStarting Application..");
+		
+		AccountInfo a = new AccountInfo();
+		GameStats b = new GameStats(SQLDatabase.blackjack);
+		GameStats s = new GameStats(SQLDatabase.slotMachine);
+		sql.InsertIntoAccount(a);
+		sql.InsertIntoGame(b, a.username);
+		sql.InsertIntoGame(s, a.username);
 		
 		Account player = new Account();
 

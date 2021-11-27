@@ -4,20 +4,25 @@ public class SQLDatabase {
 
 	static String blackjack = "blackjack";
 	static String slotMachine = "slot machine";
+	
 	static String selectFromAccount = "SELECT balance FROM account WHERE username=";
 	static String selectFromGame = "SELECT time_played, games_won, games_lost, largest_win, longest_streak "
 			+ "FROM game WHERE game_name=";
 	static String selectFromDeposit = "SELECT id, date, amount FROM deposit WHERE username=";
 	static String selectFromWithdraw = "SELECT id, date, amount FROM withdraw WHERE username=";
+	
 	static String insertIntoAccount = "INSERT INTO "
 			+ "account(username,password,balance,credit_card_number,first_name,last_name,phone_number,age)";
 	static String insertIntoDeposit = "INSERT INTO deposit(date,amount,username)";
 	static String insertIntoWithdraw = "INSERT INTO withdraw(date,amount,username)";
-	/*
-    		select games won 
-    		from games 
-    		where username ="aziz"
-    		*/
+	static String insertIntoGame = "INSERT INTO game(game_name,username,time_played,games_won,games_lost,"
+			+ "largest_win, longest_streak)";
+
+	static String updateAccount = "UPDATE account SET balance=";
+			/*UPDATE table
+			SET column1 = value1, column2=value2, …
+			WHERE username = " "  ;*/		
+			
 	String database;
 	String user;
 	String password;
@@ -129,10 +134,10 @@ public class SQLDatabase {
 		*/
 	}
 
-	public int[] SelectFromGame(String gameName, String username) // FOR GAME STATS
+	public GameStats SelectFromGame(String gameName, String username) // FOR GAME STATS
 	{
 		ResultSet resultSet = null;
-		int[] r = new int[5];
+		GameStats stats = new GameStats(gameName);
         try (Statement statement = connection.createStatement();) 
         {
             // Create and execute a SELECT SQL statement.
@@ -140,19 +145,19 @@ public class SQLDatabase {
             resultSet = statement.executeQuery(select);
             // Print results from select statement
             while (resultSet.next()) {
-                r[0] = resultSet.getInt("time_played");
-                r[1] = resultSet.getInt("games_won");
-                r[2] = resultSet.getInt("games_lost");
-                r[3] = resultSet.getInt("largest_win");
-                r[4] = resultSet.getInt("longest_streak");
+                stats.timePlayed = resultSet.getInt("time_played");
+                stats.gamesWon = resultSet.getInt("games_won");
+                stats.gamesLost = resultSet.getInt("games_lost");
+                stats.largestWin = resultSet.getInt("largest_win");
+                stats.longestStreak = resultSet.getInt("longest_streak");
             }
-            return r;
+            return stats;
         
         }
         catch(SQLException e)
         {
         	e.printStackTrace();
-        	return r;
+        	return stats;
         }
 	}
 	
@@ -181,23 +186,6 @@ public class SQLDatabase {
         }
 	}
 	
-	public void InsertIntoTransaction(String SQLCommand, String username, Transaction t) // FOR DEPOSIT & WITHDRAW
-	{
-    	String insert = SQLCommand + " VALUES(" + t.date + "," + t.amount + ","
-    			+ username + ");";
-    	
-        try (PreparedStatement statement = connection.prepareStatement(insert);) 
-        {
-            // Create and execute a SELECT SQL statement.
-            statement.execute();
-            // Print results from select statement
-        }
-        catch(SQLException e)
-        {
-        	e.printStackTrace();
-        }
-	}
-	
 	public void InsertIntoAccount(AccountInfo info) // FOR SIGN UP
 	{
     	String insert = SQLDatabase.insertIntoAccount + " VALUES('" + info.username + "','" + info.password + "',"
@@ -215,5 +203,103 @@ public class SQLDatabase {
         	e.printStackTrace();
         }
 	}
+	
+	public void InsertIntoGame(GameStats stats, String username) // FOR GAME STATS
+	{
+    	String insert = SQLDatabase.insertIntoGame + " VALUES('" + stats.gameName + "','" + username + "',"
+    			+ stats.timePlayed + "," + stats.gamesWon + ",'" + stats.gamesLost + "','" + stats.largestWin
+    			+ "'," + stats.longestStreak + ");";
+		
+        try (PreparedStatement statement = connection.prepareStatement(insert);) 
+        {
+            // Create and execute a SELECT SQL statement.
+            statement.execute();
+            // Print results from select statement
+        }
+        catch(SQLException e)
+        {
+        	e.printStackTrace();
+        }
+	}
+	
+	public void InsertIntoTransaction(String SQLCommand, String username, Transaction t) // FOR DEPOSIT & WITHDRAW
+	{
+    	String insert = SQLCommand + " VALUES(" + t.date + "," + t.amount + ","
+    			+ username + ");";
+    	
+        try (PreparedStatement statement = connection.prepareStatement(insert);) 
+        {
+            // Create and execute a SELECT SQL statement.
+            statement.execute();
+            // Print results from select statement
+        }
+        catch(SQLException e)
+        {
+        	e.printStackTrace();
+        }
+	}
 
+	public void UpdateAccount(int balance, String username)
+	{
+		/*UPDATE table
+		SET column1 = value1, column2=value2, …
+		WHERE username = " "  ;*/
+		
+    	String update = SQLDatabase.updateAccount + balance + " WHERE username=" + "'" + username + "'"; 		
+        
+    	try (PreparedStatement statement = connection.prepareStatement(update);) 
+        {
+            // Create and execute a SELECT SQL statement.
+            statement.execute();
+            // Print results from select statement.
+        }
+        catch(SQLException e)
+        {
+        	e.printStackTrace();
+        }
+	}
+	
+	public void UpdateGame(GameStats stats, String username, boolean isGameWon)
+	{
+		/*UPDATE table
+		SET column1 = value1, column2=value2, …
+		WHERE username = " "  ;*/
+		//game_name,username,time_played,games_won,games_lost,largest_win,longest_streak
+		String update;
+		if(isGameWon)
+		{
+			update = "UPDATE game SET games_won=games_won+1";
+			GameStats old = SelectFromGame(stats.gameName, username);
+			
+			if(stats.largestWin > old.largestWin)
+			{
+				update = update + ", largest_win=" + stats.largestWin;
+			}
+			if(stats.longestStreak > old.longestStreak)
+			{
+				update = update + ", longest_streak=" + stats.longestStreak;
+			}
+			
+			update = update + "WHERE username=" + "'" + username + "'" + " AND game_name=" 
+			+ "'" + stats.gameName + "'";
+			
+		}
+		else
+		{
+			update = "UPDATE game SET games_lost=games_lost+1 WHERE username=" + "'" + username + "'"
+					+ " AND game_name=" + "'" + stats.gameName + "'";
+		}		
+        
+    	try (PreparedStatement statement = connection.prepareStatement(update);) 
+        {
+            // Create and execute a SELECT SQL statement.
+            statement.execute();
+            // Print results from select statement.
+        }
+        catch(SQLException e)
+        {
+        	e.printStackTrace();
+        }
+	}
+	
 }
