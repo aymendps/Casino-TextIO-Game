@@ -378,7 +378,7 @@ public class SQLDatabase {
 				update = update + ", longest_streak=" + stats.longestStreak;
 			}
 			
-			update = update + "WHERE username=" + "'" + username + "'" + " AND game_name=" 
+			update = update + " WHERE username=" + "'" + username + "'" + " AND game_name=" 
 			+ "'" + stats.gameName + "'";
 			
 		}
@@ -400,13 +400,13 @@ public class SQLDatabase {
         }
 	}
 
-    public void UpdateGame(GameStats stats, String username) // UPDATE TIME PLAYED
+    public void UpdateTimePlayed(GameStats stats, String username) // UPDATE TIME PLAYED
     {
         		/*UPDATE table
 		SET column1 = value1, column2=value2, �
 		WHERE username = " "  ;*/
 		
-    	String update = "UPDATE game SET time_played=time_played+" + stats.timePlayed + " WHERE username=" + "'" + username
+    	String update = "UPDATE game SET time_played=time_played+" + stats.timePlayed + " WHERE username=" + "'" + username + "'"
         + " AND game_name=" + "'" + stats.gameName + "'";	
         
     	try (PreparedStatement statement = connection.prepareStatement(update);) 

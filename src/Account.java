@@ -9,7 +9,7 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 
 public class Account implements Music {
 	private AccountInfo accountInfo;
-	private SQLDatabase SQLdb;
+	public SQLDatabase SQLdb;
 	private boolean useSQL = true;
 	//private String username;
 	private String tempuser; // Temp username used for sign-in
@@ -212,6 +212,8 @@ public class Account implements Music {
 				{
 					SignInSuccess=true;
 					accountInfo = i;
+					blackJackStats = SQLdb.SelectFromGame(SQLDatabase.blackjack, accountInfo.username);
+					slotMachineStats = SQLdb.SelectFromGame(SQLDatabase.slotMachine, accountInfo.username);
 					PlaySoundEffect(intro_endSE);
 					TextIO.putln("And..Perfect! I'll handle the rest of the paperwork now.\r\n"
 					+ "Well, enjoy your evening, and remember, spend your money \"wisely\".");
@@ -498,10 +500,6 @@ public class Account implements Music {
 			inputCheck = TextIO.getlnInt();
 		}
 		while (inputCheck !=1 && inputCheck!=2);
-		if(inputCheck==1)
-		{
-			
-		}
 
 	}
 	private void SignUp()
