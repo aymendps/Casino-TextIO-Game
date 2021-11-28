@@ -29,4 +29,16 @@ public class GameStats {
 		this.longestStreak = 0;
 	}
 
+	public void View ()
+	{
+		
+		TextIO.putln("\r\n#########################################################################\r\n"+gameName.toUpperCase()+"\r\n\r\nTime played: "
+		+timePlayed+"\r\n"
+		+"Wins: "+gamesWon+"\r\n"
+		+"Defeats: "+gamesLost+"\r\n"
+		+"Largest win: "+largestWin+"\r\n"
+		+"Longest streak: "+longestStreak);
+		
+	}
+
 }

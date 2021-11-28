@@ -487,7 +487,22 @@ public class Account implements Music {
 	
 	public void ViewGameStats()
 	{
-		
+		int inputCheck=0;
+		TextIO.putln(accountInfo.username.toUpperCase()+"'s game stats:");
+		blackJackStats.View();
+		slotMachineStats.View();
+		TextIO.putln();
+		do
+		{
+			TextIO.putln("[1- View transaction history | 2- Return to main menu]");
+			inputCheck = TextIO.getlnInt();
+		}
+		while (inputCheck !=1 && inputCheck!=2);
+		if(inputCheck==1)
+		{
+			
+		}
+
 	}
 	private void SignUp()
 	{

@@ -2,7 +2,7 @@ public class Main {
 	
 	public static void main(String[] args) {
 		
-		SQLDatabase sql = new SQLDatabase("casino_app", "root", "yourpassword");
+		SQLDatabase sql = new SQLDatabase("casino_app", "root", "");
 		System.out.print("Established MYSQL connection: " + sql.connection.toString());
 		System.out.print("\r\nStarting Application..");
 
@@ -60,6 +60,12 @@ public class Main {
 		}
 		else if(temp==5)
 		{
+			//crespy sound
+			player.ViewGameStats();
+			
+		}
+		else if(temp==6)
+		{
 			player.PlaySoundEffect(player.exitSE);
 			TextIO.putln("Thanks for coming and come back soon!");
 			while(player.soundEffectClip.isRunning())
@@ -70,7 +76,7 @@ public class Main {
 			System.exit(0);
 		}
 		}
-		while(temp!=5);
+		while(temp!=6);
 	}
 
 }
