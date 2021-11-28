@@ -1,9 +1,27 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+
 public class Main {
 	
 	public static void main(String[] args) {
 		
-		SQLDatabase sql = new SQLDatabase("casino_app", "root", "yourpassword");
+		String password = "";
+		try{
+			File file = new File("password.casino");
+			Scanner sc = new Scanner(file);
+			sc.useDelimiter("\\Z");
+			password = sc.next();
+			sc.close();
+		} catch (FileNotFoundException e) {
+			System.out.println("File: 'password.casino' is missing. Please create the file and store your MySQL password in it."
+			+ "\r\nIf your project contains a .gitignore, make sure to include 'password.casino' to it.\r\n");
+		}
+
+		SQLDatabase sql = new SQLDatabase("casino_app", "root", password);
+
 		Stopwatch stopwatch = new Stopwatch();
+
 		System.out.print("Established MYSQL connection: " + sql.connection.toString());
 		System.out.print("\r\nStarting Application..");
 
@@ -28,7 +46,7 @@ public class Main {
 		" chips:\r\n1-Purchase chips\r\n2-Convert chips into money\r\n3-Play Blackjack\r\n4-Play Slot Machine\r\n5-Exit");	
 		}
 		temp=TextIO.getlnInt();
-		if(temp<1 || temp>5)
+		if(temp<1 || temp>6)
 		{
 			mistake = true;
 		}
@@ -37,7 +55,7 @@ public class Main {
 			mistake = false;
 		}
 		}
-		while(temp<1 || temp>5);
+		while(temp<1 || temp>6);
 		
 		if(temp==1)
 		{
@@ -64,7 +82,7 @@ public class Main {
 		}
 		else if(temp==5)
 		{
-			//crespy sound
+			// Game Stats
 			player.ViewGameStats();
 			
 		}
