@@ -54,6 +54,11 @@ public class Account implements Music {
 	{
 		return accountInfo.balance;
 	}
+
+	public String GetUsername()
+	{
+		return accountInfo.username;
+	}
 	
 	private void FetchFiles()
 	{
@@ -163,6 +168,8 @@ public class Account implements Music {
 					SQLdb.InsertIntoAccount(accountInfo);
 					SQLdb.InsertIntoGame(blackJackStats, accountInfo.username);
 					SQLdb.InsertIntoGame(slotMachineStats, accountInfo.username);
+					System.out.print("\r\nMethod: Sign up");
+					accountInfo.Print();
 				}
 			}
 			else
@@ -198,36 +205,59 @@ public class Account implements Music {
 		}
 		else if(SignUp == false)
 		{
-			String user,pass;
-			boolean test=false;
-			int indexWanted=0;
-			for(int i=0; i<DBtotalindex;i++)
+			if(useSQL)
 			{
-				String fileName = "db\\DB" + i + ".casino";
-				TextIO.readFile(fileName);
-				user = TextIO.getln();
-				pass = TextIO.getln();
-				TextIO.readStandardInput();
-				if(user.equals(tempuser)==true && pass.equals(temppass)==true)
+				AccountInfo i = SQLdb.SelectFromAccount(tempuser, temppass);
+				if(!i.username.equals("none"))
 				{
-					test=true;
-					indexWanted = i; 
+					SignInSuccess=true;
+					accountInfo = i;
+					PlaySoundEffect(intro_endSE);
+					TextIO.putln("And..Perfect! I'll handle the rest of the paperwork now.\r\n"
+					+ "Well, enjoy your evening, and remember, spend your money \"wisely\".");
+					System.out.print("\r\nMethod: Sign in");
+					accountInfo.Print();
 				}
-			}
-			
-			if(test==true)
-			{
-				DBcurrentindex = indexWanted;
-				SignInSuccess=true;
-				GetDB();
-				PlaySoundEffect(intro_endSE);
-				TextIO.putln("And..Perfect! I'll handle the rest of the paperwork now.\r\nWell, enjoy your evening, and remember, spend your money \"wisely\".");
+				else
+				{
+					SignInSuccess=false;
+					PlaySoundEffect(intro_mistake_signinSE);
+					TextIO.putln("It doesnt match..There must be a mistake somewhere. Try again..");
+				}
 			}
 			else
 			{
-				SignInSuccess=false;
-				PlaySoundEffect(intro_mistake_signinSE);
-				TextIO.putln("It doesnt match..There must be a mistake somewhere. Try again..");
+				String user,pass;
+				boolean test=false;
+				int indexWanted=0;
+				for(int i=0; i<DBtotalindex;i++)
+				{
+					String fileName = "db\\DB" + i + ".casino";
+					TextIO.readFile(fileName);
+					user = TextIO.getln();
+					pass = TextIO.getln();
+					TextIO.readStandardInput();
+					if(user.equals(tempuser)==true && pass.equals(temppass)==true)
+					{
+						test=true;
+						indexWanted = i; 
+					}
+				}
+				
+				if(test==true)
+				{
+					DBcurrentindex = indexWanted;
+					SignInSuccess=true;
+					GetDB();
+					PlaySoundEffect(intro_endSE);
+					TextIO.putln("And..Perfect! I'll handle the rest of the paperwork now.\r\nWell, enjoy your evening, and remember, spend your money \"wisely\".");
+				}
+				else
+				{
+					SignInSuccess=false;
+					PlaySoundEffect(intro_mistake_signinSE);
+					TextIO.putln("It doesnt match..There must be a mistake somewhere. Try again..");
+				}
 			}
 			
 		}
@@ -460,10 +490,10 @@ public class Account implements Music {
 		   {
 	       do
 	       {
-			   TextIO.putln("Please type your Username:\r\nMust be between 4 and 16 of length:");
+			   TextIO.putln("Please type your Username:\r\nMust be between 6 and 16 of length:");
 	           accountInfo.username=TextIO.getlnString();
 	       } 
-	       while(accountInfo.username.length()<4 ||  accountInfo.username.length()>16);
+	       while(accountInfo.username.length()<6 ||  accountInfo.username.length()>16);
 
 	       do
 	       {
@@ -506,16 +536,16 @@ public class Account implements Music {
 		{
         do
         {
-        TextIO.putln("Please type your Username:\r\nMust be between 4 and 10 of length:");
+        TextIO.putln("Please type your Username:\r\nMust be between 6 and 16 of length:");
 		tempuser = TextIO.getlnString();
         }
-        while(tempuser.length()<4 || tempuser.length()>10);
+        while(tempuser.length()<6 || tempuser.length()>16);
         do
         {
-        TextIO.putln("Please type your Password:\r\nMust be between 8 and 16 of length:");
+        TextIO.putln("Please type your Password:\r\nMust be between 6 and 16 of length:");
 		temppass = TextIO.getlnString();
         }
-        while(temppass.length()<8 || temppass.length()>16);
+        while(temppass.length()<6 || temppass.length()>16);
         SignUp = false;
         FetchAccount();
 		}

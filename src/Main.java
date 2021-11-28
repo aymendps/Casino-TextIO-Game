@@ -2,10 +2,10 @@ public class Main {
 	
 	public static void main(String[] args) {
 		
-		SQLDatabase sql = new SQLDatabase("casino_app", "root", "WaRkAiT123-");
+		SQLDatabase sql = new SQLDatabase("casino_app", "root", "yourpassword");
 		System.out.print("Established MYSQL connection: " + sql.connection.toString());
 		System.out.print("\r\nStarting Application..");
-		
+
 		Account player = new Account(sql);
 		
 		player.UserChoice();
@@ -18,11 +18,13 @@ public class Main {
 		{
 			player.PlaySoundEffect(player.intro_mistakeSE);
 			TextIO.putln("I apologize.. I don't think I can help with that.\r\nAny other requests?");
-			TextIO.putln("[Main Menu:] You currently have " + player.GetBalance() + " chips:\r\n1-Purchase chips\r\n2-Convert chips into money\r\n3-Play Blackjack\r\n4-Play Slot Machine\r\n5-Exit");		
+			TextIO.putln("[Main Menu:] Welcome " + player.GetUsername() + "! You currently have " + player.GetBalance() +
+			" chips:\r\n1-Purchase chips\r\n2-Convert chips into money\r\n3-Play Blackjack\r\n4-Play Slot Machine\r\n5-Exit");		
 		}
 		else
 		{
-	    TextIO.putln("[Main Menu:] You currently have " + player.GetBalance() + " chips:\r\n1-Purchase chips\r\n2-Convert chips into money\r\n3-Play Blackjack\r\n4-Play Slot Machine\r\n5-Exit");	
+	    TextIO.putln("[Main Menu:] Welcome " + player.GetUsername() + "! You currently have " + player.GetBalance() +
+		" chips:\r\n1-Purchase chips\r\n2-Convert chips into money\r\n3-Play Blackjack\r\n4-Play Slot Machine\r\n5-Exit");	
 		}
 		temp=TextIO.getlnInt();
 		if(temp<1 || temp>5)

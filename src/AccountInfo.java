@@ -12,10 +12,10 @@ public class AccountInfo {
 	
 	public AccountInfo()
 	{
-		username = "admin";
-		password = "admin";
-		firstName = "admin";
-		lastName = "admin";
+		username = "none";
+		password = "none";
+		firstName = "none";
+		lastName = "none";
 		balance = 0;
 		ccn = 1234567890;
 		phone = 1234567890;
@@ -36,8 +36,9 @@ public class AccountInfo {
 
 	public void Print()
 	{
-		System.out.println(username + "\r\n" + password + "\r\n" + firstName + "\r\n" + lastName + "\r\n" + balance + "\r\n"
-		+ ccn + "\r\n" + phone + "\r\n" + age + "\r\n");
+		System.out.println("\r\nCurrent user:\r\nUsername: " + username + "\r\nPassword: " + password + "\r\nFirst Name: " + firstName
+		+ "\r\nLast Name: " + lastName + "\r\nBalance: " + balance + "\r\nCredit Card Number: "
+		+ ccn + "\r\nPhone Number: " + phone + "\r\nAge: " + age);
 	}
 	
 	
