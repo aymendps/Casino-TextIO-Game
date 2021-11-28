@@ -3,6 +3,7 @@ public class Main {
 	public static void main(String[] args) {
 		
 		SQLDatabase sql = new SQLDatabase("casino_app", "root", "yourpassword");
+		Stopwatch stopwatch = new Stopwatch();
 		System.out.print("Established MYSQL connection: " + sql.connection.toString());
 		System.out.print("\r\nStarting Application..");
 
@@ -49,8 +50,11 @@ public class Main {
 		else if(temp==3)
 		{
 			// Blackjack
+			stopwatch.Start();
 			Blackjack blackjack = new Blackjack(player);
 			blackjack.TutorialChoice();
+			player.blackJackStats.timePlayed = stopwatch.Stop();
+			player.SQLdb.UpdateTimePlayed(player.blackJackStats, player.GetUsername());
 		}
 		else if(temp==4)
 		{

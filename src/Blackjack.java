@@ -10,6 +10,8 @@ public class Blackjack extends Game{
 	private int random2p;
 	private int random1b;
 	private int random2b;
+	private int winnings;
+	private int streak;
 
     public Blackjack(Account player)
     {
@@ -19,8 +21,34 @@ public class Blackjack extends Game{
     	doThisOnce = false;
     	roundDone = false;
     	playerState = true;
+		winnings = 0;
+		streak = 0;
     }
     
+	private void CheckWinAchievements(boolean hasWon, int bet)
+	{
+		if(hasWon)
+		{
+			winnings = bet;
+			streak++;
+		}
+		else
+		{
+			winnings = 0;
+			streak = 0;
+		}
+
+		if(winnings > player.blackJackStats.largestWin)
+		{
+			player.blackJackStats.largestWin = winnings;
+		}
+
+		if(streak > player.blackJackStats.longestStreak)
+		{
+			player.blackJackStats.longestStreak = streak;
+		} 
+	}
+
     private int PlayerDrawCard()
     {
     	if(deck.IsEmpty()==true)
@@ -143,7 +171,10 @@ public class Blackjack extends Game{
            	{
            		roundDone=true;
            		TextIO.putln("[Lucky! You got a Blackjack! ROUND WON]");
+				CheckWinAchievements(true, super.GetPlayerBet()+ super.GetPlayerBet()/2);
            		player.ChangeBalance(super.GetPlayerBet()+ super.GetPlayerBet()/2);
+				player.SQLdb.UpdateAccount(player.GetBalance(), player.GetUsername());
+				player.SQLdb.UpdateGame(player.blackJackStats, player.GetUsername(), true);
            		betComplete=false;
            	}
            	else if(deck.GetPlayerBackJack()==true && deck.GetBankBackJack()==true)
@@ -183,7 +214,10 @@ public class Blackjack extends Game{
            	{
            		roundDone=true;
            		TextIO.putln("[Total count of your cards exceeds 21: ROUND LOST]");
+				CheckWinAchievements(false, 0);
            		player.ChangeBalance(-super.GetPlayerBet());
+				player.SQLdb.UpdateAccount(player.GetBalance(), player.GetUsername());
+				player.SQLdb.UpdateGame(player.blackJackStats, player.GetUsername(), false);
            		betComplete=false;
            	}
              	}
@@ -204,7 +238,11 @@ public class Blackjack extends Game{
                	{
                		roundDone=true;
                		TextIO.putln("[Total count of your cards exceeds 21: ROUND LOST]");
+					CheckWinAchievements(false, 0);
                		player.ChangeBalance(-super.GetPlayerBet());
+					player.SQLdb.UpdateAccount(player.GetBalance(), player.GetUsername());
+					player.SQLdb.UpdateGame(player.blackJackStats, player.GetUsername(), false);
+           		
                		betComplete=false;
                	}
              	}
@@ -227,14 +265,20 @@ public class Blackjack extends Game{
            	{
            		roundDone=true;
            		TextIO.putln("[Total count of opposition cards exceeds 21: ROUND WON]");
+				CheckWinAchievements(true, super.GetPlayerBet());
            		player.ChangeBalance(super.GetPlayerBet());
+				player.SQLdb.UpdateAccount(player.GetBalance(), player.GetUsername());
+				player.SQLdb.UpdateGame(player.blackJackStats, player.GetUsername(), true);
            		betComplete=false;
            	}
            	else if((deck.GetBankCount()>deck.GetPlayerCount()) && deck.GetBankCount()>=17)
            	{
            		roundDone=true;
            		TextIO.putln("[Total count of opposition cards exceeds total count of your cards: ROUND LOST]");
+				CheckWinAchievements(false, 0);
            		player.ChangeBalance(-super.GetPlayerBet());
+				player.SQLdb.UpdateAccount(player.GetBalance(), player.GetUsername());
+				player.SQLdb.UpdateGame(player.blackJackStats, player.GetUsername(), false);
            		betComplete=false;
            	}
            	else if((deck.GetBankCount()==deck.GetPlayerCount()) && deck.GetBankCount()>=17)
@@ -254,7 +298,7 @@ public class Blackjack extends Game{
          }
        while(roundDone==false);
        
-	    player.UpdateDB();
+	    //player.UpdateDB();
         player.PlaySoundEffect(player.game_roundSE);
     	TextIO.putln("So.. Another round? [Your current balance: " + player.GetBalance() + " chips]\r\n[1- Yes, keep the same bet | 2- Yes, but change the bet | 3- No]");
     	
