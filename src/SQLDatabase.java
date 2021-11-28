@@ -21,11 +21,6 @@ public class SQLDatabase {
 	static String insertIntoWithdraw = "INSERT INTO withdraw(date,amount,username)";
 	static String insertIntoGame = "INSERT INTO game(game_name,username,time_played,games_won,games_lost,"
 			+ "largest_win, longest_streak)";
-
-	static String updateAccount = "UPDATE account SET balance=";
-			/*UPDATE table
-			SET column1 = value1, column2=value2, �
-			WHERE username = " "  ;*/		
 			
 	String database;
 	String user;
@@ -327,8 +322,8 @@ public class SQLDatabase {
 	
 	public void InsertIntoTransaction(String SQLCommand, String username, Transaction t) // FOR DEPOSIT & WITHDRAW
 	{
-    	String insert = SQLCommand + " VALUES(" + t.date + "," + t.amount + ","
-    			+ username + ");";
+    	String insert = SQLCommand + " VALUES(" + "'" + t.date + "'" + "," + t.amount + ","
+    			+ "'" + username + "'" + ")";
     	
         try (PreparedStatement statement = connection.prepareStatement(insert);) 
         {
@@ -348,7 +343,7 @@ public class SQLDatabase {
 		SET column1 = value1, column2=value2, �
 		WHERE username = " "  ;*/
 		
-    	String update = SQLDatabase.updateAccount + balance + " WHERE username=" + "'" + username + "'"; 		
+    	String update = "UPDATE account SET balance=" + balance + " WHERE username=" + "'" + username + "'"; 		
         
     	try (PreparedStatement statement = connection.prepareStatement(update);) 
         {
@@ -404,5 +399,26 @@ public class SQLDatabase {
         	e.printStackTrace();
         }
 	}
+
+    public void UpdateGame(GameStats stats, String username) // UPDATE TIME PLAYED
+    {
+        		/*UPDATE table
+		SET column1 = value1, column2=value2, �
+		WHERE username = " "  ;*/
+		
+    	String update = "UPDATE game SET time_played=time_played+" + stats.timePlayed + " WHERE username=" + "'" + username
+        + " AND game_name=" + "'" + stats.gameName + "'";	
+        
+    	try (PreparedStatement statement = connection.prepareStatement(update);) 
+        {
+            // Create and execute a SELECT SQL statement.
+            statement.execute();
+            // Print results from select statement.
+        }
+        catch(SQLException e)
+        {
+        	e.printStackTrace();
+        }
+    }
 	
 }

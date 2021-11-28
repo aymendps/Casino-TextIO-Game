@@ -403,37 +403,48 @@ public class Account implements Music {
     }
 	public void Deposit()
 	{
-		long bankNumber;
+		int confirmation;
 		int deposit;
 		PlaySoundEffect(deposit_chipsSE);
-		TextIO.putln("How many chips would you like to purchase?");
+		TextIO.putln("How many chips would you like to purchase? [1 chip: 1 usd]");
 	    do
 	    {
-		   TextIO.putln("Please type the number of chips:\r\nMinimum purchase: 10 chips\r\nMaximum purchase: 5000 chips");
+		   TextIO.putln("Please type the number of chips:\r\nMinimum purchase: 10 chips\r\nMaximum purchase: 50000 chips");
 		   deposit=TextIO.getlnInt();
 	    }
-		while(deposit<10 || deposit>5000);
+		while(deposit<10 || deposit>50000);
 	    
 	    PlaySoundEffect(bank_cardSE);
 	    TextIO.putln("I just need you to insert your card here please.");
 	    do
 	    {
-	    TextIO.putln("Please type your Credit Card Number:");
-		bankNumber=TextIO.getlnLong();
+	    TextIO.putln("Credit Card " + accountInfo.ccn + " is going to be charged " + deposit
+		+ " usd.\r\nPlease confirm the transaction. [1- Confirm | 2- Abort]");
+		confirmation=TextIO.getlnInt();
 		}
-		while(bankNumber<10000000);
-		
-	    ChangeBalance(deposit);
-	    UpdateDB();
-	    PlaySoundEffect(transactionSE);
-	    TextIO.putln("Transaction complete!");
+		while(confirmation!=1 && confirmation!=2);
+
+		if(confirmation==1)
+		{
+			ChangeBalance(deposit);
+			SQLdb.UpdateAccount(accountInfo.balance, accountInfo.username);
+			Transaction t = new Transaction(deposit);
+			SQLdb.InsertIntoTransaction(SQLDatabase.insertIntoDeposit, accountInfo.username, t);
+			PlaySoundEffect(transactionSE);
+			TextIO.putln("Transaction complete!");
+		}
+		else
+		{
+			TextIO.putln("Transaction aborted.");
+		}
+
 	    
 	}
 	public void Withdraw()
 	{
 		if(accountInfo.balance>0)
 		{
-		long bankNumber;
+		int confirmation;
 		int withdraw;
 		PlaySoundEffect(withdraw_chipsSE);
 	    TextIO.putln("Congratulations on your winnings! How many chips would you like to turn-in?");
@@ -445,18 +456,28 @@ public class Account implements Music {
 	    while(withdraw>accountInfo.balance);
 	    PlaySoundEffect(bank_cardSE);
 	    TextIO.putln("I just need you to insert your card here please.");
-		do
-		{
-	    TextIO.putln("Please enter your Bank Account / Card number:");
-		bankNumber=TextIO.getlnLong();
+	    do
+	    {
+	    TextIO.putln("Withdrawing " + withdraw + " usd to Credit Card " +  accountInfo.ccn
+		+"\r\nPlease confirm the transaction. [1- Confirm | 2- Abort]");
+		confirmation=TextIO.getlnInt();
 		}
-		while(bankNumber<10000000);
+		while(confirmation!=1 && confirmation!=2);
 		
+		if(confirmation==1)
+		{
+			ChangeBalance(-withdraw);
+			SQLdb.UpdateAccount(accountInfo.balance, accountInfo.username);
+			Transaction t = new Transaction(withdraw);
+			SQLdb.InsertIntoTransaction(SQLDatabase.insertIntoWithdraw, accountInfo.username, t);
+			PlaySoundEffect(transactionSE);
+			TextIO.putln("Transaction complete!");
+		}
+		else
+		{
+			TextIO.putln("Transaction aborted.");
+		}
 
-	    ChangeBalance(-withdraw);
-	    UpdateDB();
-	    PlaySoundEffect(transactionSE);
-	    TextIO.putln("Transaction complete!");
 		}
 		else
 		{
