@@ -1,10 +1,14 @@
 import java.sql.*;
 
+import com.mysql.cj.exceptions.WrongArgumentException;
+
 public class SQLDatabase {
 
 	static String blackjack = "blackjack";
 	static String slotMachine = "slot machine";
-	
+	static String deposit = "deposit";
+    static String withdraw = "withdraw";
+
 	static String selectFromAccountBalance = "SELECT balance FROM account WHERE username=";
     static String selectFromAccountSignIn = "SELECT * FROM account WHERE username=";
     static String selectFromAccountUsername = "Select username FROM account WHERE username=";
@@ -14,7 +18,9 @@ public class SQLDatabase {
 			+ "FROM game WHERE game_name=";
 	static String selectFromDeposit = "SELECT id, date, amount FROM deposit WHERE username=";
 	static String selectFromWithdraw = "SELECT id, date, amount FROM withdraw WHERE username=";
-	
+    static String selectCountDeposit = "SELECT COUNT(*) FROM deposit WHERE username=";
+    static String selectCountWithdraw = "SELECT COUNT(*) FROM withdraw WHERE username=";
+
 	static String insertIntoAccount = "INSERT INTO "
 			+ "account(username,password,balance,credit_card_number,first_name,last_name,phone_number,age)";
 	static String insertIntoDeposit = "INSERT INTO deposit(date,amount,username)";
@@ -259,20 +265,49 @@ public class SQLDatabase {
         }
 	}
 	
-	public Transaction SelectFromTransaction(String SQLCommand, String username) // FOR TRANSACTIONS HISTORY
+	public Transaction[] SelectFromTransaction(String tableName, String username) // FOR TRANSACTIONS HISTORY
 	{
 		ResultSet resultSet = null;
-        Transaction t = new Transaction();
+        ResultSet countSet = null;
+        int total = 0;
+        Transaction[] t = null;
         try (Statement statement = connection.createStatement();) 
-        {
+        {   
+            String select, count;
             // Create and execute a SELECT SQL statement.
-        	String select = SQLCommand + "'" + username + "'";
+            if(tableName.equals(deposit))
+            {
+                select = selectFromDeposit + "'" + username + "'";
+                count = selectCountDeposit + "'" + username + "'";
+            }
+            else if(tableName.equals(withdraw))
+            {
+                select = selectFromWithdraw + "'" + username + "'";
+                count = selectCountWithdraw + "'" + username + "'";
+            }
+            else
+            {
+                throw new WrongArgumentException();
+            }
+            countSet = statement.executeQuery(count);
+            while(countSet.next())
+            {
+                total = countSet.getInt("COUNT(*)");
+            }
+
+            if(total==0)
+            {
+                return t;
+            }
+
             resultSet = statement.executeQuery(select);
             // Print results from select statement
+            int i=0;
+            t = new Transaction[total];
             while (resultSet.next()) {
-                t.id = resultSet.getInt("id");
-                t.date = resultSet.getDate("date");
-                t.amount = resultSet.getInt("amount");
+                Transaction transaction = new Transaction(resultSet.getInt("amount"), resultSet.getInt("id"), resultSet.getDate("date"));
+                t[i] = transaction;
+                i++;
             }
             return t;
         
@@ -281,6 +316,11 @@ public class SQLDatabase {
         {
         	e.printStackTrace();
         	return t;
+        }
+        catch(WrongArgumentException e)
+        {
+            System.err.println(tableName + " is not a valid table name. Try changing the String argument.");
+            return t;
         }
 	}
 	
@@ -320,10 +360,24 @@ public class SQLDatabase {
         }
 	}
 	
-	public void InsertIntoTransaction(String SQLCommand, String username, Transaction t) // FOR DEPOSIT & WITHDRAW
+	public void InsertIntoTransaction(String tableName, String username, Transaction t) // FOR DEPOSIT & WITHDRAW
 	{
-    	String insert = SQLCommand + " VALUES(" + "'" + t.date + "'" + "," + t.amount + ","
-    			+ "'" + username + "'" + ")";
+        String insert;
+        
+        if(tableName.equals(deposit))
+        {
+            insert = insertIntoDeposit + " VALUES(" + "'" + t.date + "'" + "," + t.amount + ","
+            + "'" + username + "'" + ")";
+        }
+        else if(tableName.equals(withdraw))
+        {
+            insert = insertIntoWithdraw + " VALUES(" + "'" + t.date + "'" + "," + t.amount + ","
+            + "'" + username + "'" + ")";
+        }
+        else
+        {
+            throw new WrongArgumentException();
+        }
     	
         try (PreparedStatement statement = connection.prepareStatement(insert);) 
         {
@@ -334,6 +388,10 @@ public class SQLDatabase {
         catch(SQLException e)
         {
         	e.printStackTrace();
+        }
+        catch(WrongArgumentException e)
+        {
+            System.err.println(tableName + " is not a valid table name. Try changing the String argument.");
         }
 	}
 

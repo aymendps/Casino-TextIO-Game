@@ -431,7 +431,7 @@ public class Account implements Music {
 			ChangeBalance(deposit);
 			SQLdb.UpdateAccount(accountInfo.balance, accountInfo.username);
 			Transaction t = new Transaction(deposit);
-			SQLdb.InsertIntoTransaction(SQLDatabase.insertIntoDeposit, accountInfo.username, t);
+			SQLdb.InsertIntoTransaction(SQLDatabase.deposit, accountInfo.username, t);
 			PlaySoundEffect(transactionSE);
 			TextIO.putln("Transaction complete!");
 		}
@@ -471,7 +471,7 @@ public class Account implements Music {
 			ChangeBalance(-withdraw);
 			SQLdb.UpdateAccount(accountInfo.balance, accountInfo.username);
 			Transaction t = new Transaction(withdraw);
-			SQLdb.InsertIntoTransaction(SQLDatabase.insertIntoWithdraw, accountInfo.username, t);
+			SQLdb.InsertIntoTransaction(SQLDatabase.withdraw, accountInfo.username, t);
 			PlaySoundEffect(transactionSE);
 			TextIO.putln("Transaction complete!");
 		}
@@ -502,6 +502,12 @@ public class Account implements Music {
 		while (inputCheck !=1 && inputCheck!=2);
 
 	}
+
+	public void ViewTransactionHistory()
+	{
+		
+	}
+
 	private void SignUp()
 	{
 	       TextIO.putln("Please type your age:");

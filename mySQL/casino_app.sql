@@ -49,6 +49,7 @@ SELECT * from account;
 SELECT * from game;
 SELECT * from deposit;
 SELECT * from withdraw;
+SELECT COUNT(*) from deposit where username="dragunov";
 DELETE FROM game;
 DELETE FROM account;
 DELETE FROM deposit;

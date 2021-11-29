@@ -33,6 +33,10 @@ public class Transaction {
         return new Date(millis); 
 	}
 	
+	public void Print()
+	{
+		System.out.println("Transaction:\r\nID= " + id + "\r\nDATE= " + date + "\r\nAMOUNT= " + amount);
+	}
 	
 
 }

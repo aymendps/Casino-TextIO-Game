@@ -38,15 +38,17 @@ public class Main {
 			player.PlaySoundEffect(player.intro_mistakeSE);
 			TextIO.putln("I apologize.. I don't think I can help with that.\r\nAny other requests?");
 			TextIO.putln("[Main Menu:] Welcome " + player.GetUsername() + "! You currently have " + player.GetBalance() +
-			" chips:\r\n1-Purchase chips\r\n2-Convert chips into money\r\n3-Play Blackjack\r\n4-Play Slot Machine\r\n5-Exit");		
+			" chips:\r\n1-Purchase chips\r\n2-Convert chips into money\r\n3-Play Blackjack\r\n4-Play Slot Machine\r\n"
+			+ "5-View my game stats\r\n6-View my transaction history\r\n7-Exit");		
 		}
 		else
 		{
 	    TextIO.putln("[Main Menu:] Welcome " + player.GetUsername() + "! You currently have " + player.GetBalance() +
-		" chips:\r\n1-Purchase chips\r\n2-Convert chips into money\r\n3-Play Blackjack\r\n4-Play Slot Machine\r\n5-Exit");	
+		" chips:\r\n1-Purchase chips\r\n2-Convert chips into money\r\n3-Play Blackjack\r\n4-Play Slot Machine\r\n"
+		+ "5-View my game stats\r\n6-View my transaction history\r\n7-Exit");
 		}
 		temp=TextIO.getlnInt();
-		if(temp<1 || temp>6)
+		if(temp<1 || temp>7)
 		{
 			mistake = true;
 		}
@@ -55,7 +57,7 @@ public class Main {
 			mistake = false;
 		}
 		}
-		while(temp<1 || temp>6);
+		while(temp<1 || temp>7);
 		
 		if(temp==1)
 		{
@@ -84,9 +86,13 @@ public class Main {
 		{
 			// Game Stats
 			player.ViewGameStats();
-			
 		}
 		else if(temp==6)
+		{
+			// Transaction History
+			player.ViewTransactionHistory();
+		}
+		else if(temp==7)
 		{
 			player.PlaySoundEffect(player.exitSE);
 			TextIO.putln("Thanks for coming and come back soon!");
@@ -98,7 +104,7 @@ public class Main {
 			System.exit(0);
 		}
 		}
-		while(temp!=6);
+		while(temp!=7);
 	}
 
 }
