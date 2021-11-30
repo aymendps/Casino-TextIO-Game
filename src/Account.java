@@ -491,6 +491,8 @@ public class Account implements Music {
 	{
 		int inputCheck=0;
 		TextIO.putln(accountInfo.username.toUpperCase()+"'s game stats:");
+		blackJackStats=SQLdb.SelectFromGame(SQLDatabase.blackjack, accountInfo.username);
+		slotMachineStats=SQLdb.SelectFromGame(SQLDatabase.slotMachine, accountInfo.username);
 		blackJackStats.View();
 		slotMachineStats.View();
 		TextIO.putln();
@@ -500,12 +502,49 @@ public class Account implements Music {
 			inputCheck = TextIO.getlnInt();
 		}
 		while (inputCheck !=1 && inputCheck!=2);
+		if (inputCheck ==1){
+			ViewTransactionHistory();
+		}
 
+	}
+
+	public void ViewTransactionTable(String tName)
+	{
+		Transaction[] transTab = SQLdb.SelectFromTransaction(tName, accountInfo.username);
+		TextIO.putln(tName.toUpperCase());
+		TextIO.putln();
+		if (transTab == null)
+		{
+			TextIO.putln("N/A");
+		} 
+		else 
+		{
+			for(int i=0;i<transTab.length;i++)
+			{
+				transTab[i].View();
+			}
+		}
 	}
 
 	public void ViewTransactionHistory()
 	{
-		
+		int inputCheck=0;
+		TextIO.putln();
+		TextIO.putln("###############################################################################");
+		ViewTransactionTable(SQLDatabase.deposit);
+		TextIO.putln("###############################################################################");
+		ViewTransactionTable(SQLDatabase.withdraw);
+		TextIO.putln("###############################################################################");
+		TextIO.putln();
+		do
+		{
+			TextIO.putln("[1- View Game Stats | 2- Return to main menu]");
+			inputCheck = TextIO.getlnInt();
+		}
+		while (inputCheck !=1 && inputCheck!=2);
+		if (inputCheck ==1){
+			ViewGameStats();
+		}
 	}
 
 	private void SignUp()
