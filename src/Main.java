@@ -1,5 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class Main {
@@ -16,6 +17,8 @@ public class Main {
 		} catch (FileNotFoundException e) {
 			System.out.println("File: 'password.casino' is missing. Please create the file and store your MySQL password in it."
 			+ "\r\nIf your project contains a .gitignore, make sure to include 'password.casino' to it.\r\n");
+		} catch (NoSuchElementException e){
+			password = "";
 		}
 
 		SQLDatabase sql = new SQLDatabase("casino_app", "root", password);

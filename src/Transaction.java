@@ -38,5 +38,9 @@ public class Transaction {
 		System.out.println("Transaction:\r\nID= " + id + "\r\nDATE= " + date + "\r\nAMOUNT= " + amount);
 	}
 	
+	public void View ()
+	{
+		TextIO.putln("Transaction:\r\nID= "+ id +":\r\nDATE= " + date + "\r\nAMOUNT= " + amount+"\r\n");
+	}
 
 }
