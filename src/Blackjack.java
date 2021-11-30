@@ -10,8 +10,7 @@ public class Blackjack extends Game{
 	private int random2p;
 	private int random1b;
 	private int random2b;
-	private int winnings;
-	private int streak;
+	private WinAchievements winAchievements;
 
     public Blackjack(Account player)
     {
@@ -21,33 +20,8 @@ public class Blackjack extends Game{
     	doThisOnce = false;
     	roundDone = false;
     	playerState = true;
-		winnings = 0;
-		streak = 0;
+		winAchievements = new WinAchievements(player.blackJackStats);
     }
-    
-	private void CheckWinAchievements(boolean hasWon, int bet)
-	{
-		if(hasWon)
-		{
-			winnings = bet;
-			streak++;
-		}
-		else
-		{
-			winnings = 0;
-			streak = 0;
-		}
-
-		if(winnings > player.blackJackStats.largestWin)
-		{
-			player.blackJackStats.largestWin = winnings;
-		}
-
-		if(streak > player.blackJackStats.longestStreak)
-		{
-			player.blackJackStats.longestStreak = streak;
-		} 
-	}
 
     private int PlayerDrawCard()
     {
@@ -171,7 +145,7 @@ public class Blackjack extends Game{
            	{
            		roundDone=true;
            		TextIO.putln("[Lucky! You got a Blackjack! ROUND WON]");
-				CheckWinAchievements(true, super.GetPlayerBet()+ super.GetPlayerBet()/2);
+				winAchievements.CheckWinAchievements(true, super.GetPlayerBet()+ super.GetPlayerBet()/2);
            		player.ChangeBalance(super.GetPlayerBet()+ super.GetPlayerBet()/2);
 				player.SQLdb.UpdateAccount(player.GetBalance(), player.GetUsername());
 				player.SQLdb.UpdateGame(player.blackJackStats, player.GetUsername(), true);
@@ -214,7 +188,7 @@ public class Blackjack extends Game{
            	{
            		roundDone=true;
            		TextIO.putln("[Total count of your cards exceeds 21: ROUND LOST]");
-				CheckWinAchievements(false, 0);
+				winAchievements.CheckWinAchievements(false, 0);
            		player.ChangeBalance(-super.GetPlayerBet());
 				player.SQLdb.UpdateAccount(player.GetBalance(), player.GetUsername());
 				player.SQLdb.UpdateGame(player.blackJackStats, player.GetUsername(), false);
@@ -238,7 +212,7 @@ public class Blackjack extends Game{
                	{
                		roundDone=true;
                		TextIO.putln("[Total count of your cards exceeds 21: ROUND LOST]");
-					CheckWinAchievements(false, 0);
+					winAchievements.CheckWinAchievements(false, 0);
                		player.ChangeBalance(-super.GetPlayerBet());
 					player.SQLdb.UpdateAccount(player.GetBalance(), player.GetUsername());
 					player.SQLdb.UpdateGame(player.blackJackStats, player.GetUsername(), false);
@@ -265,7 +239,7 @@ public class Blackjack extends Game{
            	{
            		roundDone=true;
            		TextIO.putln("[Total count of opposition cards exceeds 21: ROUND WON]");
-				CheckWinAchievements(true, super.GetPlayerBet());
+				winAchievements.CheckWinAchievements(true, super.GetPlayerBet());
            		player.ChangeBalance(super.GetPlayerBet());
 				player.SQLdb.UpdateAccount(player.GetBalance(), player.GetUsername());
 				player.SQLdb.UpdateGame(player.blackJackStats, player.GetUsername(), true);
@@ -275,7 +249,7 @@ public class Blackjack extends Game{
            	{
            		roundDone=true;
            		TextIO.putln("[Total count of opposition cards exceeds total count of your cards: ROUND LOST]");
-				CheckWinAchievements(false, 0);
+				winAchievements.CheckWinAchievements(false, 0);
            		player.ChangeBalance(-super.GetPlayerBet());
 				player.SQLdb.UpdateAccount(player.GetBalance(), player.GetUsername());
 				player.SQLdb.UpdateGame(player.blackJackStats, player.GetUsername(), false);

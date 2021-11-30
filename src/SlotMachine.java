@@ -2,6 +2,7 @@
 public class SlotMachine extends Game{
  
 	private	SlotNumber sn;
+	private WinAchievements winAchievements;
 	boolean win;
 	boolean repeatInit;
 	int firstNumber;
@@ -17,8 +18,7 @@ public SlotMachine(Account player)
 	firstNumber = 0;
 	secondNumber = 0;
 	thirdNumber = 0;
-	
-	
+	winAchievements = new WinAchievements(player.slotMachineStats);
 }
 public void TutorialChoice()
 {
@@ -81,16 +81,12 @@ public void StartGame()
 	    firstNumber = sn.GetRandomNumber();
 	    secondNumber = sn.GetRandomNumber();
 	    thirdNumber = sn.GetRandomNumber();
-	if(( firstNumber + secondNumber== thirdNumber) &&(sn.GetProbability()>25))
-	{
-		repeatInit=true;
-		
-	}
-	else if((firstNumber % 2 == 0) && (secondNumber % 2 == 0 )&& (thirdNumber %2 == 0)&&(sn.GetProbability()>75))
+
+	if((firstNumber % 2 == 0) && (secondNumber % 2 == 0 )&& (thirdNumber %2 == 0)&&(sn.GetProbability()>75))
 	{
 		repeatInit=true;
 	}
-	else if((firstNumber % 2 != 0) && (secondNumber % 2 != 0 )&& (thirdNumber %2 != 0)&&(sn.GetProbability()>50))
+	else if((firstNumber % 2 != 0) && (secondNumber % 2 != 0 )&& (thirdNumber %2 != 0)&&(sn.GetProbability()>75))
 	{
 		repeatInit=true;
 	}
@@ -103,7 +99,10 @@ public void StartGame()
 	if((firstNumber==7)&&(secondNumber==7)&&(thirdNumber==7))
 	{
 		TextIO.putln("[LUCKY STRIKE! YOU WIN 1000x YOUR BET: " + super.GetPlayerBet()*1000 + " CHIPS!]");
+		winAchievements.CheckWinAchievements(true, super.GetPlayerBet()*1000);
 		player.ChangeBalance(super.GetPlayerBet()*1000-super.GetPlayerBet());
+	    player.SQLdb.UpdateAccount(player.GetBalance(), player.GetUsername());
+	    player.SQLdb.UpdateGame(player.slotMachineStats, player.GetUsername(), true);
 		win=true;
 	}
 	else if ((firstNumber==4)&&(secondNumber==0)&&(thirdNumber==4))
@@ -116,28 +115,40 @@ public void StartGame()
 if((firstNumber % 2 == 0) && (secondNumber % 2 == 0 )&& (thirdNumber %2 == 0))
 {
 	TextIO.putln("[ALL EVEN! You win 2x your bet: " + super.GetPlayerBet()*2 + " chips!]");
+	winAchievements.CheckWinAchievements(true, super.GetPlayerBet()*2);
 	player.ChangeBalance(super.GetPlayerBet()*2-super.GetPlayerBet());
+	player.SQLdb.UpdateAccount(player.GetBalance(), player.GetUsername());
+	player.SQLdb.UpdateGame(player.slotMachineStats, player.GetUsername(), true);
 	win=true;
 }
 if( firstNumber + secondNumber== thirdNumber)
 {
 	TextIO.putln("[SUM COMBO! You win 10x your bet: " + super.GetPlayerBet()*10 + " chips!]");
+	winAchievements.CheckWinAchievements(true, super.GetPlayerBet()*10);
 	player.ChangeBalance(super.GetPlayerBet()*10-super.GetPlayerBet());
+	player.SQLdb.UpdateAccount(player.GetBalance(), player.GetUsername());
+	player.SQLdb.UpdateGame(player.slotMachineStats, player.GetUsername(), true);
 	win=true;
 }
 if((firstNumber % 2 != 0) && (secondNumber % 2 != 0 )&& (thirdNumber %2 != 0))
 {
 	TextIO.putln("[ALL ODD! You win 3x your bet: " + super.GetPlayerBet()*3 + " chips!]");
+	winAchievements.CheckWinAchievements(true, super.GetPlayerBet()*3);
 	player.ChangeBalance(super.GetPlayerBet()*3-super.GetPlayerBet());
+	player.SQLdb.UpdateAccount(player.GetBalance(), player.GetUsername());
+	player.SQLdb.UpdateGame(player.slotMachineStats, player.GetUsername(), true);
 	win=true;
 }
 	}
 	if(win==false)
 	{	
 		TextIO.putln("[Unlucky! No winning combination.. You lose your bet: " + super.GetPlayerBet() + " chips!]");
+		winAchievements.CheckWinAchievements(false, 0);
 		player.ChangeBalance(-super.GetPlayerBet());
+		player.SQLdb.UpdateAccount(player.GetBalance(), player.GetUsername());
+		player.SQLdb.UpdateGame(player.slotMachineStats, player.GetUsername(), false);
 	}
-	player.UpdateDB();
+	//player.UpdateDB();
 	player.PlaySoundEffect(player.game_roundSE);
 	TextIO.putln("So.. Another round? [Your current balance: " + player.GetBalance() + " chips]\r\n[1- Yes, keep the same bet | 2- Yes, but change the bet | 3- No]");
     int repeatDecision;
