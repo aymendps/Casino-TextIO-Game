@@ -32,7 +32,7 @@ The project was originally developed by:
 
 - [Aymen HAMMAMI](https://github.com/aymendps)
 - [Aziz MAAZOUZ](https://github.com/aziz-maazouz)
-- [Youssef Aydi](https://github.com/youssef-aydi)
+- [Youssef AYDI](https://github.com/youssef-aydi)
 
 ## License
 
