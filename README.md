@@ -6,22 +6,6 @@ Casino TextIO Game is a casino simulator developped using Java and MySQL. It has
 
 - Slot Machine: Luck-based game where the goal is to play until hitting a jackpot. 
 
-## Contribution
-
-Thank you for your interest in our project. There are many ways to contribute,
-and we appreciate all of them :
-
-- Source code
-- Unit tests
-- Bug Reports
-- Documentation
-- Localization (Translation)
-- ...
-
-Contributions should be under the terms of the MIT license.
-
-> [Check out the license of this project.](LICENSE)
-
 ## How to build
 
 > [Check out BUILD.md](BUILD.md)
