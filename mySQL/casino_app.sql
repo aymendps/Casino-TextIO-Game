@@ -41,25 +41,3 @@ create table Casino_App.Deposit (
     FOREIGN KEY (username) REFERENCES Account(username),
     PRIMARY KEY (id)
 );
-
-#########################################################################################################
-
-insert into purchase(date,amount,username,game_name) values("2021-11-25",100,"aziz","blackjack");
-SELECT * from account;
-SELECT * from game;
-SELECT * from deposit;
-SELECT * from withdraw;
-SELECT COUNT(*) from deposit where username="dragunov";
-DELETE FROM game;
-DELETE FROM account;
-DELETE FROM deposit;
-DELETE FROM withdraw;
-ALTER TABLE withdraw AUTO_INCREMENT = 1;
-ALTER TABLE deposit AUTO_INCREMENT = 1;
-Insert into account(username,password,balance,credit_card_number,first_name ,last_name ,phone_number ,age)
-values("aziz", "lolaazz", 500, 151510,"aziz","maazouz",1541545,23);
-Insert into game(game_name,username,time_played,games_won,games_lost,largest_win,longest_streak)
-values("slot machine", "aziz", 4, 2, 3, 300, 7);
-UPDATE account SET balance=balance-50 WHERE username = "aziz";
-SELECT * from account WHERE username = "admin" AND password = "admin";
-INSERT INTO deposit(date,amount,username) VALUES("2021-11-25",100,"dragunov")

@@ -45,7 +45,9 @@ public class Account implements Music {
     	blackJackStats = new GameStats(SQLDatabase.blackjack);
     	slotMachineStats = new GameStats(SQLDatabase.slotMachine);
     	this.SQLdb = SQLdb;
-    	FetchDBTI();
+		if(!useSQL) {
+			FetchDBTI();
+		} 
     	FetchFiles();
 
     }
