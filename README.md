@@ -22,5 +22,5 @@ The project was originally developed by:
 
 This project is licensed under the [MIT License](LICENSE).
 
-However, all the sound effects / voice acting are the property of its artist [WASSIM FOURATI](https://www.linkedin.com/in/wassim-fourati-6b71b823b/), who gave us the right to use them in this project exclusively.
+However, all the sound effects / voice acting are the property of its artist [Wassim FOURATI](https://www.linkedin.com/in/wassim-fourati-6b71b823b/), who gave us the right to use them in this project exclusively.
 You're not allowed to re-use them in any other project without contacting him for a license.
