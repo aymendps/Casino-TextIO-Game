@@ -1,6 +1,6 @@
 # Casino TextIO Game
 
-Casino TextIO Game is a casino simulator developped using Java and MySQL. It has an account system, a balance/transaction system and two games that any user can enjoy:
+Casino TextIO Game is a casino simulator developped using Java and MySQL. It has an account system, a balance system, game stats, transactions history and two games that any user can enjoy:
 
 - Blackjack: The most widely played casino banking game in the world. The goal of Blackjack is to collect cards that total more points than the dealer, without going over 21
 
