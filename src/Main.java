@@ -82,8 +82,11 @@ public class Main {
 		else if(temp==4)
 		{
 			// Slot Machine
+			stopwatch.Start();
 			SlotMachine sm = new SlotMachine(player);
 			sm.TutorialChoice();
+			player.slotMachineStats.timePlayed = stopwatch.Stop();
+			player.SQLdb.UpdateTimePlayed(player.slotMachineStats, player.GetUsername());
 		}
 		else if(temp==5)
 		{
